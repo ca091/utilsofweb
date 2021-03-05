@@ -27,7 +27,7 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
     if (!url) throw Error(`${apiName} is undefined`)
     const dataSend = {...initConfig.getData(), ...data}
     const request: RequestInit = {
-      body: JSON.stringify(dataSend),
+      // body: JSON.stringify(dataSend),
       method,
       mode: 'cors',
       headers: {
@@ -48,7 +48,16 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
     }
     // @ts-ignore
     else if (request.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
-      request.body = qs.stringify(dataSend)
+      // TypeError: Failed to execute 'fetch' on 'Window': Request with GET/HEAD method cannot have body.
+      // see => https://github.com/whatwg/fetch/issues/551
+      // @ts-ignore
+      if (request.method.toLowerCase() === 'get') {
+        url += `?${qs.stringify(dataSend)}`
+      } else {
+        request.body = qs.stringify(dataSend)
+      }
+    } else {
+      request.body = JSON.stringify(dataSend)
     }
 
     let fn = () => new Promise((resolve, reject) => {
@@ -89,7 +98,8 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
             }
           }
         })
-        .catch(() => {
+        .catch(error => {
+          console.warn('fetch error occur:', error)
           // 网络故障 或 请求被阻止
           handler && handler(null, {code: 0, message: 'network error !'})
           reject('network error !')
