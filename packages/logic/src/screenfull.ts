@@ -6,6 +6,7 @@ const screenfull = {
     error: fn.fullscreenerror,
   },
   async request(element: Element) {
+    // ios 兼容 使用 webkitEnterFullscreen
     element = element || document.documentElement
     // @ts-ignore
     await element[fn.requestFullscreen]()
