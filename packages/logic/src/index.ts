@@ -10,4 +10,4 @@
 // 应用打包
 // export {generateFetch} from './http'
 
-export {screenfull} from './screenfull'
+export {fullscreen, fullscreenIos} from './screenfull'
