@@ -22,14 +22,14 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
   let apiLock = new Lock()
 
   function fetchData (apiName: string, data: object = {}, header: object = {}, opts = {mountElement: document.body, timeout: 0}) {
-    let [url, method, domain] = apis[apiName]
-    if (!url) {
+    if (!apis[apiName]) {
       if (/^https?:/.test(apiName)) {
         return fetch(apiName, data)
       } else {
         throw Error(`${apiName} is undefined`)
       }
     }
+    let [url, method, domain] = apis[apiName]
     const dataSend = {...initConfig.getData(), ...data}
     const request: RequestInit = {
       // body: JSON.stringify(dataSend),
