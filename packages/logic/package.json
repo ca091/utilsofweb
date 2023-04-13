@@ -18,6 +18,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/qs": "^6.9.2",
-    "qs": "^6.9.7"
+    "qs": "^6.5.3"
   }
 }
