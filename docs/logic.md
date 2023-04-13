@@ -24,8 +24,10 @@ pm.setPages(events).setDefaultPage('home').init()
 import {Logic} from 'utilsofweb'
 import apis from './apis.js'
 let initConfig = {
-  data: {
-    from: 'js'
+  getData() {
+    return {
+      from: 'js'
+    }
   },
   header: {
     'Content-Type': 'application/x-www-form-urlencoded'

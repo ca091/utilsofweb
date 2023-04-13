@@ -18,11 +18,10 @@ interface Configs {
 
 function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Function): Function {
   let apis: Apis = initApis
-  // let initData = initConfig.getData() || {}
   let initHeader = initConfig.header || {}
   let apiLock = new Lock()
 
-  function fetchData (apiName: string, data: object = {}, header: object = {}, opts = {mountElement: undefined, timeout: 0}) {
+  function fetchData (apiName: string, data: object = {}, header: object = {}, opts = {mountElement: document.body, timeout: 0}) {
     let [url, method, domain] = apis[apiName]
     if (!url) throw Error(`${apiName} is undefined`)
     const dataSend = {...initConfig.getData(), ...data}
@@ -62,7 +61,7 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
 
     let fn = () => new Promise((resolve, reject) => {
       // loading
-      if (opts && opts.mountElement !== undefined && initConfig.loading) {
+      if (opts.mountElement && initConfig.loading) {
         initConfig.loading.start(opts.mountElement)
       }
       // abort fetch
@@ -106,7 +105,7 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
         })
         .finally(() => {
           // loading over
-          if (opts && opts.mountElement !== undefined && initConfig.loading) {
+          if (opts.mountElement && initConfig.loading) {
             initConfig.loading.stop()
           }
           setTimeout(apiLock.unlock.bind(apiLock), 300, channel)
