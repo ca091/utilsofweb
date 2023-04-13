@@ -23,7 +23,13 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
 
   function fetchData (apiName: string, data: object = {}, header: object = {}, opts = {mountElement: document.body, timeout: 0}) {
     let [url, method, domain] = apis[apiName]
-    if (!url) throw Error(`${apiName} is undefined`)
+    if (!url) {
+      if (/^https?:/.test(apiName)) {
+        return fetch(apiName, data)
+      } else {
+        throw Error(`${apiName} is undefined`)
+      }
+    }
     const dataSend = {...initConfig.getData(), ...data}
     const request: RequestInit = {
       // body: JSON.stringify(dataSend),
