@@ -65,17 +65,18 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
       request.body = JSON.stringify(dataSend)
     }
 
+    const controller = new AbortController()
+    request.signal = controller.signal
+
     let fn = () => new Promise((resolve, reject) => {
       // loading
       if (opts.mountElement && initConfig.loading) {
         initConfig.loading.start(opts.mountElement)
       }
       // abort fetch
-      let timerId: any
-      if (opts && opts.timeout > 0) {
-        let controller = new AbortController()
-        request.signal = controller.signal
-        timerId = setTimeout(() => controller.abort(), opts.timeout)
+      let timerId: number
+      if (opts.timeout > 0) {
+        timerId = window.setTimeout(() => controller.abort(), opts.timeout)
       }
       fetch(domain ? domain + url : url, request)
         .then(res => {
@@ -117,7 +118,12 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
           setTimeout(apiLock.unlock.bind(apiLock), 300, channel)
         })
     })
-    return apiLock.lock(channel, fn)
+
+    let promise = apiLock.lock(channel, fn)
+    promise.abort = function() {
+      controller.abort()
+    }
+    return promise
   }
 
   fetchData.addApi = (moreApis: Apis): void => {

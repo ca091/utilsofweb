@@ -22,7 +22,7 @@ pm.setPages(events).setDefaultPage('home').init()
 
 ```javascript
 import {Logic} from 'utilsofweb'
-import apis from './apis.js'
+import Apis from './apis.js'
 let initConfig = {
   getData() {
     return {
@@ -31,14 +31,51 @@ let initConfig = {
   },
   header: {
     'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  loading: {
+    start() {
+      loadingToast = showLoadingToast({
+        message: '加载中...',
+        forbidClick: true,
+      })
+    },
+    stop() {
+      loadingToast && loadingToast.close()
+    },
+  },
+}
+
+function errorHandler(res, err) {
+  let {code} = res
+  if (code === 500) {
+    showFailToast('网络故障，请稍后再试')
+  } else {
+    switch (code) {
+      case 401:
+        showFailToast('登录已过期，请重新登录')
+        router.replace({name: 'login'})
+        break
+      default:
+        showFailToast(res.msg || '操作失败')
+        break
+    }
   }
 }
-let cFetch = Logic.generateFetch(apis, initConfig)
-cFetch('getSensitiveWords', {page: 1}).then(res => {
-  console.log('res: ', res)
-}).catch(err => {
-  console.warn('error: ', err)
-})
+
+const $fetch = Logic.generateFetch(Apis, initConfig, errorHandler)
+
+const promise = $fetch('getSensitiveWords', {page: 1})
+
+promise
+  .then(res => {
+    console.log('res: ', res)
+  })
+  .catch(err => {
+    console.warn('error: ', err)
+  })
+
+// 取消请求
+promise.abort()
 ```
 
 - lazyImg
