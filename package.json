@@ -1,6 +1,6 @@
 {
   "name": "utilsofweb",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "bit utils of web",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
