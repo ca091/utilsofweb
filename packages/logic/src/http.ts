@@ -107,8 +107,8 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
         .catch(error => {
           console.warn('fetch error occur:', error)
           // 网络故障 或 请求被阻止
-          handler && handler(null, {code: 0, message: 'network error !'})
-          reject('network error !')
+          handler && handler(null, error)
+          reject(error)
         })
         .finally(() => {
           // loading over
