@@ -1,7 +1,7 @@
 import {LitElement, html, customElement, property} from 'lit-element'
 // import { classMap } from 'lit-html/directives/class-map'
 import {pagefull, videopip} from '../shared/utils'
-import {screenfull} from '../../logic/src'
+import {fullscreen} from '../../logic/src'
 
 @customElement('c-v-controls')
 class VideoControls extends LitElement{
@@ -52,10 +52,10 @@ class VideoControls extends LitElement{
   }
 
   initEvents() {
-    screenfull.onchange(() => {
-      this.isFullscreen = screenfull.isFullscreen()
+    fullscreen.onchange(() => {
+      this.isFullscreen = fullscreen.isFullscreen
     })
-    screenfull.onerror(() => {
+    fullscreen.onerror(() => {
       console.warn('onerror', this.isFullscreen)
     })
 
@@ -87,7 +87,7 @@ class VideoControls extends LitElement{
   async handleFullscreen() {
     if (this.box) {
       try {
-        await screenfull.toggle(this.box as HTMLElement)
+        await fullscreen.toggle(this.box as HTMLElement)
       } catch (err) {
         console.warn(err.message)
       }

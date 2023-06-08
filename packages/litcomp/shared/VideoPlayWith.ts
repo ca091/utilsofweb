@@ -1,5 +1,5 @@
 // unused
-import fn from './prefix_fullscreen'
+import fn from '../../logic/src/hleper/prefix_fullscreen'
 
 interface VideoPlayWith {
   request(element: Element): Promise<any>;
