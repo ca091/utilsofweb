@@ -62,7 +62,12 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
         request.body = qs.stringify(dataSend)
       }
     } else {
-      request.body = JSON.stringify(dataSend)
+      // @ts-ignore
+      if (request.method.toLowerCase() === 'get') {
+        url += `?${qs.stringify(dataSend)}`
+      } else {
+        request.body = JSON.stringify(dataSend)
+      }
     }
 
     const controller = new AbortController()
