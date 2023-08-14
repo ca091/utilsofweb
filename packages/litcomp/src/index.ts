@@ -1,14 +1,14 @@
-const Componnets: Record<string, string> = {
+const Components: Record<string, string> = {
   Message: 'Message'
 }
 
 function registerComponent(c: string) {
-  if (Componnets[c] !== undefined) {
+  if (Components[c] !== undefined) {
     import(`./litcomp/${c}.es.js`)
   }
 }
 
 export {
-  Componnets,
+  Components,
   registerComponent
 }

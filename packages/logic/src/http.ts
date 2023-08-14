@@ -18,13 +18,18 @@ interface Configs {
 
 function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Function): Function {
   let apis: Apis = initApis
-  // let initData = initConfig.getData() || {}
   let initHeader = initConfig.header || {}
   let apiLock = new Lock()
 
-  function fetchData (apiName: string, data: object = {}, header: object = {}, opts = {mountElement: undefined, timeout: 0}) {
+  function fetchData (apiName: string, data: object = {}, header: object = {}, opts = {mountElement: document.body, timeout: 0}) {
+    if (!apis[apiName]) {
+      if (/^https?:/.test(apiName)) {
+        return fetch(apiName, data)
+      } else {
+        throw Error(`${apiName} is undefined`)
+      }
+    }
     let [url, method, domain] = apis[apiName]
-    if (!url) throw Error(`${apiName} is undefined`)
     const dataSend = {...initConfig.getData(), ...data}
     const request: RequestInit = {
       // body: JSON.stringify(dataSend),
@@ -57,20 +62,26 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
         request.body = qs.stringify(dataSend)
       }
     } else {
-      request.body = JSON.stringify(dataSend)
+      // @ts-ignore
+      if (request.method.toLowerCase() === 'get') {
+        url += `?${qs.stringify(dataSend)}`
+      } else {
+        request.body = JSON.stringify(dataSend)
+      }
     }
+
+    const controller = new AbortController()
+    request.signal = controller.signal
 
     let fn = () => new Promise((resolve, reject) => {
       // loading
-      if (opts && opts.mountElement !== undefined && initConfig.loading) {
+      if (opts.mountElement && initConfig.loading) {
         initConfig.loading.start(opts.mountElement)
       }
       // abort fetch
-      let timerId: any
-      if (opts && opts.timeout > 0) {
-        let controller = new AbortController()
-        request.signal = controller.signal
-        timerId = setTimeout(() => controller.abort(), opts.timeout)
+      let timerId: number
+      if (opts.timeout > 0) {
+        timerId = window.setTimeout(() => controller.abort(), opts.timeout)
       }
       fetch(domain ? domain + url : url, request)
         .then(res => {
@@ -101,18 +112,23 @@ function generateFetch(initApis: Apis = {}, initConfig: Configs, handler?: Funct
         .catch(error => {
           console.warn('fetch error occur:', error)
           // 网络故障 或 请求被阻止
-          handler && handler(null, {code: 0, message: 'network error !'})
-          reject('network error !')
+          handler && handler(null, error)
+          reject(error)
         })
         .finally(() => {
           // loading over
-          if (opts && opts.mountElement !== undefined && initConfig.loading) {
+          if (opts.mountElement && initConfig.loading) {
             initConfig.loading.stop()
           }
           setTimeout(apiLock.unlock.bind(apiLock), 300, channel)
         })
     })
-    return apiLock.lock(channel, fn)
+
+    let promise = apiLock.lock(channel, fn)
+    promise.abort = function() {
+      controller.abort()
+    }
+    return promise
   }
 
   fetchData.addApi = (moreApis: Apis): void => {

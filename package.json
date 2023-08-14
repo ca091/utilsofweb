@@ -1,6 +1,6 @@
 {
   "name": "utilsofweb",
-  "version": "2.2.0",
+  "version": "2.2.8",
   "description": "bit utils of web",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -23,18 +23,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erluzi/utilsofweb.git"
+    "url": "git+https://github.com/ca091/utilsofweb.git"
   },
   "keywords": [
     "utils",
     "web"
   ],
-  "author": "erluzi",
+  "author": "ca091",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/erluzi/utilsofweb/issues"
+    "url": "https://github.com/ca091/utilsofweb/issues"
   },
-  "homepage": "https://github.com/erluzi/utilsofweb#readme",
+  "homepage": "https://github.com/ca091/utilsofweb#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.1.0",
     "@rollup/plugin-node-resolve": "^7.1.3",
