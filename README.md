@@ -4,7 +4,7 @@
 $ npm i utilsofweb
 ```
 
-> usage: see [document](https://erluzi.github.io/utilsofweb/#/)
+> usage: see [document](https://ca091.github.io/utilsofweb/#/)
 
 ## support three build script
 

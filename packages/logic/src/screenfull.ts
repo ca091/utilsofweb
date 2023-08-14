@@ -7,7 +7,7 @@ const fullscreen = {
     change: fn.fullscreenchange,
     error: fn.fullscreenerror,
   },
-  async request(element: Element, options: FullscreenOptions = {navigationUI: 'auto'}) {
+  async request(element: HTMLElement, options: FullscreenOptions = {navigationUI: 'auto'}) {
     element = element || document.documentElement
     if (this.isEnabled) {
       // @ts-ignore
@@ -18,7 +18,7 @@ const fullscreen = {
     // @ts-ignore
     await document[fn.exitFullscreen]()
   },
-  async toggle(element: Element, options: FullscreenOptions = {navigationUI: 'auto'}) {
+  async toggle(element: HTMLElement, options: FullscreenOptions = {navigationUI: 'auto'}) {
     if (this.isFullscreen) {
       await this.exit()
     } else {

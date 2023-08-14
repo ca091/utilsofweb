@@ -8,3 +8,4 @@ $ npm run build:litcomp
 ## 参考
 
 - [lit-element](https://lit-element.polymer-project.org/)
+- [example](https://blog.rasvi.io/2023-05-21-webcomponent-intro-with-example)
